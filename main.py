@@ -1,3 +1,4 @@
+import json
 import sys
 import numpy as np
 from io import BytesIO
@@ -57,16 +58,18 @@ class TwitchSpeechToText:
             print("> ", transcript)
 
 
-def main(twitch_url, recognizer_id, lang):
-    worker = TwitchSpeechToText(twitch_url, recognizer_id)
+def main(params, recognizer_id):
+    worker = TwitchSpeechToText(params["url"], recognizer_id)
 
     if recognizer_id == "vosk":
         from src.recognizers.vosk import VoskRecognizerManager
-        path_to_model = VoskRecognizerManager.MODELS[lang]
+        path_to_model = VoskRecognizerManager.MODELS[params["lang"]]
         VoskRecognizerManager.create(path_to_model, TwitchSpeechToText.rate)
 
     worker.run()
 
 
 if __name__ == "__main__":
-    main("https://www.twitch.tv/simyton", "vosk", "ua")
+    with open(r"D:\DEV\streamer-spy\data.json", "r", encoding="utf-8") as f:
+        data_params = json.load(f)
+    main(data_params, "vosk")
