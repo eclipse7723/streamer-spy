@@ -1,6 +1,7 @@
 import json
 import sys
 import numpy as np
+import time
 from io import BytesIO
 from pydub import AudioSegment
 from pydub.exceptions import CouldntEncodeError
@@ -55,7 +56,7 @@ class TwitchSpeechToText:
             raw_wav.export(raw_flac, format="flac")
             data = raw_flac.read()
             transcript = self.recognizer(data)
-            print("> ", transcript)
+            print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {transcript!r}")
 
 
 def main(params, recognizer_id):
