@@ -1,0 +1,6 @@
+twitchrealtimehandler
+numpy
+fake-useragent
+pydub
+vosk
+requests

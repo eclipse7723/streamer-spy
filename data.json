@@ -1,0 +1,8 @@
+{
+  "models": {
+    "ru": "streamer-spy/models/vosk-model-small-ru-0.22",
+    "ua": "streamer-spy/models/vosk-model-small-uk-v3-small"
+  },
+  "lang": "ua",
+  "url": "https://www.twitch.tv/..."
+}
