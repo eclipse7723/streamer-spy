@@ -1,5 +1,5 @@
-from src.twitch import TwitchSpeechToText
-from src.mine import MineSpeechToText
+from src.speech.twitch import TwitchSpeechToText
+from src.speech.mine import MineSpeechToText
 from src.recognizers.vosk import vosk_speech, VoskRecognizerManager
 from src.recognizers.googleapi import api_speech as googleapi_speech
 from src.utils import AudioParams
@@ -21,6 +21,9 @@ def get_recognizer(recognizer_id, lang):
     recognizer = recognizers[recognizer_id]
 
     if recognizer_id == "vosk":
+        if lang not in VoskRecognizerManager.MODELS:
+            raise ValueError(f"model for lang {lang!r} not registered in data.json at 'models' section")
+
         path_to_model = VoskRecognizerManager.MODELS[lang]
         VoskRecognizerManager.create(path_to_model, AudioParams.rate)
 

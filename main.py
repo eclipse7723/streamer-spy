@@ -1,6 +1,14 @@
 import json
 import os
 from src.manager import get_recognizer, get_speech_to_text_class
+from src.signals import simply_detect_keywords
+
+
+def report_if_keyword_found(text):
+    print(f"Bad word detected: {text}.")
+
+
+keywords = {"пиздец", "сука", "блять", "блядь"}
 
 
 def main(params, recognizer_id, speech_to_text_id):
@@ -12,6 +20,10 @@ def main(params, recognizer_id, speech_to_text_id):
     Worker = get_speech_to_text_class(speech_to_text_id)
     worker = Worker(recognizer, **extra_params)
 
+    worker.add_signal(
+        lambda text: simply_detect_keywords(text, keywords),
+        cb_true=report_if_keyword_found
+    )
     worker.run()
 
 
