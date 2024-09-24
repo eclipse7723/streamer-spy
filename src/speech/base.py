@@ -28,3 +28,4 @@ class BaseSpeechToText:
         if not callable(cb_true) and not callable(cb_false):
             raise ValueError("at least one of cb_true or cb_false should be a function")
         self.signals[signal] = (cb_true, cb_false)
+        print(f"[+] Signal added")

@@ -46,3 +46,8 @@ class AudioParams:
     playback_audio = False
 
 
+class Colors:
+    red = "\u001b[31m"
+    yellow = "\u001b[33m"
+    green = "\u001b[32m"
+    reset = "\u001b[0m"
