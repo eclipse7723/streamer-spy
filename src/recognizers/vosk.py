@@ -35,7 +35,6 @@ class VoskRecognizer:
     def recognize(self, data):
         if self._rec.AcceptWaveform(data):
             result = json.loads(self._rec.Result())
-            print(result)
             return result['text']
 
 
