@@ -41,3 +41,28 @@ streamer-spy
 ```
 
 6. Запустить `main.py`
+
+## Сигналы
+
+Можно добавить к шпиону возможность тригериться на какие-то ключевые слова с помощью такого кода:
+
+```python
+from src.signals import simply_detect_keywords
+from src.speech.twitch import TwitchSpeechToText
+from src.recognizers.vosk import vosk_speech
+
+def report_if_keyword_found(text):
+    print(f"Bad word detected: {text}.")
+
+keywords = {"пиздец", "сука", "блять", "блядь"}
+
+worker = TwitchSpeechToText(vosk_speech, twitch_url="...")
+worker.add_signal(
+    lambda text: simply_detect_keywords(text, keywords),
+    cb_true=report_if_keyword_found
+)
+worker.run()
+```
+
+Можно добавить любой свой сигнал. Функция должна принимать 1 аргумент - входной текст.
+При добавлении сигнала необходимо определить хотя бы 1 калбек (`cb_true`, `cb_false`).
