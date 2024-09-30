@@ -45,6 +45,7 @@ class SimpleKeywordsDetector(KeywordsDetectorInterface):
         if len(keywords) == 0:
             raise ValueError("No keywords provided")
         self.keywords = set(keywords)
+        print(f"{Colors.yellow}Listen to next exactly keywords: {Colors.green}{', '.join(self.keywords)}{Colors.reset}")
 
     def __call__(self, text: str):
         words = set(_tokenize(text))
@@ -69,6 +70,9 @@ class NLPKeywordsDetector(KeywordsDetectorInterface):
             raise ValueError(f"Unknown language: {lang}")
 
         self.keywords = self.prepare_keywords(keywords, lang)
+        print(f"{Colors.yellow}Listen to next {Colors.green}{lang}{Colors.yellow} stemmed keywords: "
+              f"{Colors.green}{', '.join(self.keywords)}{Colors.reset}")
+
         self.stemmer = _stemmers[lang]
         self.stopwords = _stopwords[lang]
         self.last_detected_words = []
@@ -95,7 +99,7 @@ class NLPKeywordsDetector(KeywordsDetectorInterface):
     @staticmethod
     def prepare_keywords(keywords, lang="en"):
         if lang not in _stemmers:
-            raise ValueError(f"nlp_prepare_keywords - Unknown language: {lang}")
+            raise ValueError(f"Unknown language: {lang}")
         stemmer = _stemmers[lang]
         new_keywords = set(stemmer.stem(word) for word in keywords)
         return new_keywords
