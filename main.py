@@ -1,7 +1,7 @@
 import json
 import os
 from src.manager import get_recognizer, get_speech_to_text_class
-from src.signals import NLPKeywordsDetector
+from src.signals import NLPKeywordsDetector, play_sound_on_found
 
 
 def main(params, recognizer_id, speech_to_text_id):
@@ -16,10 +16,13 @@ def main(params, recognizer_id, speech_to_text_id):
     if params.get("signal"):
         keywords = params["signal"].get("keywords", [])
         detector = NLPKeywordsDetector(keywords, params["lang"])
-        worker.add_signal(
-            detector,
-            cb_true=detector.report
-        )
+
+        worker.add_signal(detector, cb_true=detector.report)
+
+        if params["signal"].get("path_to_sound"):
+            path_to_sound = os.path.join(os.getcwd(), params["signal"]["path_to_sound"])
+            sound_reporter = play_sound_on_found(path_to_sound)   # returns actual callback
+            worker.add_signal(detector, cb_true=sound_reporter)
 
     worker.run()
 

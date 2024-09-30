@@ -1,7 +1,11 @@
+import os
+import threading
 from nltk.stem import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 from nltk import download
+from pydub import AudioSegment
+from pydub.playback import play
 from src.utils import ua_stopwords, Colors
 
 download('stopwords')
@@ -103,3 +107,17 @@ class NLPKeywordsDetector(KeywordsDetectorInterface):
         stemmer = _stemmers[lang]
         new_keywords = set(stemmer.stem(word) for word in keywords)
         return new_keywords
+
+
+def play_sound_on_found(path_to_sound):
+    file_name, file_extension = os.path.splitext(path_to_sound)
+    if file_extension == "wav":
+        audio_fragment = AudioSegment.from_wav(path_to_sound)
+    elif file_extension == "mp3":
+        audio_fragment = AudioSegment.from_mp3(path_to_sound)
+    else:
+        raise ValueError(f"Unknown file extension: {file_extension}, only wav or mp3")
+
+    def wrapper(text):
+        threading.Thread(target=play, args=(audio_fragment,)).start()
+    return wrapper
