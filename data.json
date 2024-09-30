@@ -1,9 +1,15 @@
 {
   "models": {
-    "ru": "streamer-spy/models/vosk-model-small-ru-0.22",
-    "ua": "streamer-spy/models/vosk-model-small-uk-v3-small"
+    "ru": "models\\vosk-model-small-ru-0.22",
+    "ua": "models\\vosk-model-small-uk-v3-small"
   },
   "speech_to_text": "twitch",
   "lang": "ua",
-  "url": "https://www.twitch.tv/..."
+  "url": "https://www.twitch.tv/...",
+  "signal": {
+    "keywords": [
+      "пишіть", "напишіть", "написати", "чат", "розіграш", "скін", "фраза", "участь"
+    ],
+    "path_to_sound": "res\\keyword_found.wav"
+  }
 }
