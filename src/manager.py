@@ -3,6 +3,7 @@ from src.speech.mine import MineSpeechToText
 from src.recognizers.vosk import vosk_speech, VoskRecognizerManager
 from src.recognizers.googleapi import api_speech as googleapi_speech
 from src.utils import AudioParams
+import os
 
 
 recognizers = {
@@ -15,17 +16,18 @@ speech_to_text_classes = {
 }
 
 
-def get_recognizer(recognizer_id, lang):
+def get_recognizer(recognizer_id, lang, path_to_vosk_models):
     if recognizer_id not in recognizers:
         raise ValueError(f"unknown {recognizer_id=}, possible values: {recognizers.keys()}")
     recognizer = recognizers[recognizer_id]
 
     if recognizer_id == "vosk":
-        if lang not in VoskRecognizerManager.MODELS:
+        if lang not in path_to_vosk_models:
             raise ValueError(f"model for lang {lang!r} not registered in data.json at 'models' section")
-
-        path_to_model = VoskRecognizerManager.MODELS[lang]
-        VoskRecognizerManager.create(path_to_model, AudioParams.rate)
+        path_to_vosk_model = path_to_vosk_models[lang]
+        if not os.path.exists(path_to_vosk_model):
+            raise ValueError(f"model for lang {lang!r} not found in path {path_to_vosk_model!r}")
+        VoskRecognizerManager.create(path_to_vosk_model, AudioParams.rate)
 
     return recognizer
 

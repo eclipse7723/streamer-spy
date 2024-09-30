@@ -5,7 +5,7 @@ from src.signals import NLPKeywordsDetector
 
 
 def main(params, recognizer_id, speech_to_text_id):
-    recognizer = get_recognizer(recognizer_id, params["lang"])
+    recognizer = get_recognizer(recognizer_id, params["lang"], params["models"])
 
     extra_params = {
         "twitch_url": params.get("url", "")

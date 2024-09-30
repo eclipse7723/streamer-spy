@@ -5,11 +5,6 @@ import json
 class VoskRecognizerManager:
     recognizer = None
 
-    MODELS = {
-        "ru": r"D:\DEV\streamer-spy\models\vosk-model-small-ru-0.22",
-        "ua": r"D:\DEV\streamer-spy\models\vosk-model-small-uk-v3-small",
-    }
-
     @staticmethod
     def get():
         return VoskRecognizerManager.recognizer
