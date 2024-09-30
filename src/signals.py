@@ -111,9 +111,9 @@ class NLPKeywordsDetector(KeywordsDetectorInterface):
 
 def play_sound_on_found(path_to_sound):
     file_name, file_extension = os.path.splitext(path_to_sound)
-    if file_extension == "wav":
+    if file_extension == ".wav":
         audio_fragment = AudioSegment.from_wav(path_to_sound)
-    elif file_extension == "mp3":
+    elif file_extension == ".mp3":
         audio_fragment = AudioSegment.from_mp3(path_to_sound)
     else:
         raise ValueError(f"Unknown file extension: {file_extension}, only wav or mp3")
