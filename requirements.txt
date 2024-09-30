@@ -5,3 +5,4 @@ pydub
 vosk
 requests
 pyaudio
+nltk
