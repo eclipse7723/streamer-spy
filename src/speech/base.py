@@ -16,16 +16,18 @@ class BaseSpeechToText:
         self.process_signals(text)
 
     def process_signals(self, text):
-        for signal, (cb_true, cb_false) in self.signals.items():
+        for signal, callbacks in self.signals.items():
             if signal(text):
-                if cb_true:
-                    cb_true(text)
+                for (cb_true, cb_false) in callbacks:
+                    if cb_true:
+                        cb_true(text)
             else:
-                if cb_false:
-                    cb_false(text)
+                for (cb_true, cb_false) in callbacks:
+                    if cb_false:
+                        cb_false(text)
 
     def add_signal(self, signal, cb_true=None, cb_false=None):
         if not callable(cb_true) and not callable(cb_false):
             raise ValueError("at least one of cb_true or cb_false should be a function")
-        self.signals[signal] = (cb_true, cb_false)
+        self.signals.setdefault(signal, []).append((cb_true, cb_false))
         print(f"[+] Signal added")
