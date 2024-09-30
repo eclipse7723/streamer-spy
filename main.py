@@ -1,23 +1,7 @@
 import json
 import os
 from src.manager import get_recognizer, get_speech_to_text_class
-from src.signals import simply_detect_keywords
-from src.utils import Colors
-
-
-
-class KeywordsReporter:
-    def __init__(self, keywords):
-        self.keywords = keywords
-
-    def __call__(self, text):
-        t = ""
-        for word in text.split():
-            if word in self.keywords:
-                t += f"{Colors.red}{word} "
-            else:
-                t += f"{Colors.yellow}{word} "
-        print(f"{Colors.green}Keywords detected: {Colors.yellow}{t}{Colors.reset}")
+from src.signals import NLPKeywordsDetector
 
 
 def main(params, recognizer_id, speech_to_text_id):
@@ -30,10 +14,11 @@ def main(params, recognizer_id, speech_to_text_id):
     worker = Worker(recognizer, **extra_params)
 
     if params.get("signal"):
-        keywords = set(params["signal"].get("keywords", []))
+        keywords = params["signal"].get("keywords", [])
+        detector = NLPKeywordsDetector(keywords, params["lang"])
         worker.add_signal(
-            lambda text: simply_detect_keywords(text, keywords),
-            cb_true=KeywordsReporter(keywords)
+            detector,
+            cb_true=detector.report
         )
 
     worker.run()
