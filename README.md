@@ -44,25 +44,39 @@ streamer-spy
 
 ## Сигналы
 
-Можно добавить к шпиону возможность тригериться на какие-то ключевые слова с помощью такого кода:
+Можно добавить к шпиону возможность тригериться на какие-то ключевые слова с помощью 
+встроенного решения `NLPKeywordsDetector` или более простого `SimpleKeywordsDetector`:
 
 ```python
-from src.signals import simply_detect_keywords
+from src.signals import NLPKeywordsDetector, SimpleKeywordsDetector
 from src.speech.twitch import TwitchSpeechToText
 from src.recognizers.vosk import vosk_speech
 
-def report_if_keyword_found(text):
-    print(f"Bad word detected: {text}.")
-
-keywords = {"пиздец", "сука", "блять", "блядь"}
+keywords = {"код", "промо", "промокод", "пишите", "чат"}
 
 worker = TwitchSpeechToText(vosk_speech, twitch_url="...")
-worker.add_signal(
-    lambda text: simply_detect_keywords(text, keywords),
-    cb_true=report_if_keyword_found
-)
+detector = NLPKeywordsDetector(keywords, "ru")
+worker.add_signal(detector, cb_true=detector.report)
 worker.run()
 ```
 
 Можно добавить любой свой сигнал. Функция должна принимать 1 аргумент - входной текст.
 При добавлении сигнала необходимо определить хотя бы 1 калбек (`cb_true`, `cb_false`).
+Пример:
+
+```python
+keywords = {"кот", "собак", "лошад", "кон", "хомяк"}
+
+def detect_keywords(text):
+    words = set(text.split())
+    for word in words:
+        if any([word.startswith(keyword) for keyword in keywords]):
+            return True
+    return False
+
+def on_found(text):
+    print("Пользователь упомянул животное")
+
+worker.add_signal(detect_keywords, cb_true=on_found)
+worker.run()
+```
