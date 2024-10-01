@@ -1,1 +1,1 @@
-Модели пихать сюда
+Put models to this directory. Download vosk models [here](https://alphacephei.com/vosk/models).
