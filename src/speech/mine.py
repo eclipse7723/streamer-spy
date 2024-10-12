@@ -1,11 +1,12 @@
 import time
 import pyaudio
-from src.speech.base import BaseSpeechToText
+
 from src.utils import AudioParams, play_audio_segment
+from src.speech.base import BaseSpeechToText
 
 
 class MineSpeechToText(BaseSpeechToText):
-    def __init__(self, recognizer, **kwargs):
+    def __init__(self, recognizer, **extra_params):
         super().__init__(recognizer)
         p = pyaudio.PyAudio()
         self.stream = p.open(

@@ -1,6 +1,8 @@
 import time
 import re
+
 from twitchrealtimehandler import TwitchAudioGrabber
+
 from src.speech.base import BaseSpeechToText
 from src.utils import play_audio_segment, AudioParams
 
@@ -10,7 +12,7 @@ class TwitchSpeechToText(BaseSpeechToText):
     audio_grabber = None
     recognizer = None
 
-    def __init__(self, recognizer, twitch_url, **kwargs):
+    def __init__(self, recognizer, twitch_url, **extra_params):
         super().__init__(recognizer)
 
         if not re.match(r"https?://(www\.)?twitch\.tv/(.+)", twitch_url):

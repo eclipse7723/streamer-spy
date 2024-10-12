@@ -1,10 +1,11 @@
 import json
 import os
+
 from src.manager import get_recognizer, get_speech_to_text_class
 from src.signals import NLPKeywordsDetector, play_sound_on_found
 
 
-def main(params, recognizer_id, speech_to_text_id):
+def main(params: dict, recognizer_id: str, speech_to_text_id: str):
     recognizer = get_recognizer(recognizer_id, params["lang"], params["models"])
 
     extra_params = {

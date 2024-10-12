@@ -1,12 +1,15 @@
 import os
 import threading
+
 from nltk.stem import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 from nltk import download
 from pydub import AudioSegment
 from pydub.playback import play
+
 from src.utils import ua_stopwords, Colors
+
 
 download('stopwords')
 
@@ -36,9 +39,16 @@ def check_keywords(words: set, keywords: set):
     return False
 
 
-class KeywordsDetectorInterface:
+class BaseSignal:
     def __call__(self, text: str) -> bool:
         raise NotImplementedError
+
+
+class KeywordsDetectorInterface(BaseSignal):
+    def __init__(self, keywords: list[str]):
+        if len(keywords) == 0:
+            raise ValueError("No keywords provided")
+        self.keywords = keywords
 
     def report(self, text: str) -> str:
         raise NotImplementedError
@@ -46,9 +56,8 @@ class KeywordsDetectorInterface:
 
 class SimpleKeywordsDetector(KeywordsDetectorInterface):
     def __init__(self, keywords):
-        if len(keywords) == 0:
-            raise ValueError("No keywords provided")
-        self.keywords = set(keywords)
+        super().__init__(keywords=keywords)
+        self.keywords = set(self.keywords)
         print(f"{Colors.yellow}Listen to next exactly keywords: {Colors.green}{', '.join(self.keywords)}{Colors.reset}")
 
     def __call__(self, text: str):
@@ -67,9 +76,8 @@ class SimpleKeywordsDetector(KeywordsDetectorInterface):
 
 
 class NLPKeywordsDetector(KeywordsDetectorInterface):
-    def __init__(self, keywords: set, lang="en"):
-        if len(keywords) == 0:
-            raise ValueError("No keywords provided")
+    def __init__(self, keywords, lang: str = "en"):
+        super().__init__(keywords=keywords)
         if lang not in _stemmers or lang not in _stopwords:
             raise ValueError(f"Unknown language: {lang}")
 
@@ -101,7 +109,7 @@ class NLPKeywordsDetector(KeywordsDetectorInterface):
         print(f"{Colors.green}Keywords detected: {Colors.yellow}{t}{Colors.reset}")
 
     @staticmethod
-    def prepare_keywords(keywords, lang="en"):
+    def prepare_keywords(keywords: list[str], lang="en") -> set[str]:
         if lang not in _stemmers:
             raise ValueError(f"Unknown language: {lang}")
         stemmer = _stemmers[lang]
@@ -109,7 +117,8 @@ class NLPKeywordsDetector(KeywordsDetectorInterface):
         return new_keywords
 
 
-def play_sound_on_found(path_to_sound):
+def play_sound_on_found(path_to_sound: str):
+    """ plays sound on another thread """
     file_name, file_extension = os.path.splitext(path_to_sound)
     if file_extension == ".wav":
         audio_fragment = AudioSegment.from_wav(path_to_sound)

@@ -1,14 +1,14 @@
+import os
+
+from src.speech.base import BaseSpeechToText
 from src.speech.twitch import TwitchSpeechToText
 from src.speech.mine import MineSpeechToText
 from src.recognizers.vosk import vosk_speech, VoskRecognizerManager
-from src.recognizers.googleapi import api_speech as googleapi_speech
 from src.utils import AudioParams
-import os
 
 
 recognizers = {
     "vosk": vosk_speech,
-    "google": googleapi_speech,
 }
 speech_to_text_classes = {
     "twitch": TwitchSpeechToText,
@@ -16,7 +16,7 @@ speech_to_text_classes = {
 }
 
 
-def get_recognizer(recognizer_id, lang, path_to_vosk_models):
+def get_recognizer(recognizer_id: str, lang: str, path_to_vosk_models: dict) -> callable:
     if recognizer_id not in recognizers:
         raise ValueError(f"unknown {recognizer_id=}, possible values: {recognizers.keys()}")
     recognizer = recognizers[recognizer_id]
@@ -32,7 +32,7 @@ def get_recognizer(recognizer_id, lang, path_to_vosk_models):
     return recognizer
 
 
-def get_speech_to_text_class(speech_to_text_id):
+def get_speech_to_text_class(speech_to_text_id: str) -> type[BaseSpeechToText]:
     if speech_to_text_id not in speech_to_text_classes:
         raise ValueError(f"unknown {speech_to_text_id=}, possible values: {speech_to_text_classes.keys()}")
     return speech_to_text_classes[speech_to_text_id]
